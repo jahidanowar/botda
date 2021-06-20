@@ -27,7 +27,7 @@ bot.command("quit", (ctx) => {
 bot.on("new_chat_members", (ctx) => {
   ctx.telegram.sendMessage(
     ctx.message.chat.id,
-    `Hi ${ctx.message.new_chat_member.first_name}, Welcome to CCB family 🙏`
+    `Hi ${ctx.message.new_chat_member.first_name}, Welcome to CCB family 🙏 Why don't you tell us about yourself`
   );
 });
 bot.on("left_chat_member", (ctx) => {
