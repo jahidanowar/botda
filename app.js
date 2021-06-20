@@ -2,34 +2,33 @@ const { Telegraf } = require("telegraf");
 const express = require("express");
 const app = express();
 
+const welcomeMessages = require("./src/welcomeMessages");
+
+const randomMessage = () => {
+  const randomNumber = Math.floor(Math.random() * welcomeMessages.length);
+  return welcomeMessages[randomNumber];
+};
+
+const createMessage = (message, name, group) => {
+  let output = message.replace(/{name}/g, name);
+  output = output.replace(/{group}/g, group);
+  return output;
+};
+
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
-bot.command("quit", (ctx) => {
-  // Explicit usage
-  ctx.telegram.leaveChat(ctx.message.chat.id);
-
-  // Using context shortcut
-  ctx.leaveChat();
-});
-
-// bot.on("text", (ctx) => {
-//   // Explicit usage
-//   ctx.telegram.sendMessage(
-//     ctx.message.chat.id,
-//     `Hello ${ctx.message.from.first_name}`
-//   );
-
-//   // Using context shortcut
-//   //   ctx.reply(`Hello ${ctx.state.role}`);
-//   console.log(ctx.message.from.first_name);
-// });
-
+// Greet New members
 bot.on("new_chat_members", (ctx) => {
-  ctx.telegram.sendMessage(
-    ctx.message.chat.id,
-    `Hi ${ctx.message.new_chat_member.first_name}, Welcome to CCB family 🙏 Why don't you tell us about yourself`
+  const messageTemplate = randomMessage();
+  const message = createMessage(
+    messageTemplate,
+    ctx.message.new_chat_member.first_name,
+    "CCB"
   );
+  ctx.telegram.sendMessage(ctx.message.chat.id, message);
 });
+
+// Say good bye to leaving members
 bot.on("left_chat_member", (ctx) => {
   console.log(ctx.message);
   ctx.telegram.sendMessage(
@@ -38,22 +37,14 @@ bot.on("left_chat_member", (ctx) => {
   );
 });
 
-// bot.on("callback_query", (ctx) => {
-//   // Explicit usage
-//   ctx.telegram.answerCbQuery(ctx.callbackQuery.id);
+// Leave chat
+bot.command("quit", (ctx) => {
+  // Explicit usage
+  ctx.telegram.leaveChat(ctx.message.chat.id);
 
-//   // Using context shortcut
-//   ctx.answerCbQuery();
-// });
-
-// bot.on("inline_query", (ctx) => {
-//   const result = [];
-//   // Explicit usage
-//   ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result);
-
-//   // Using context shortcut
-//   ctx.answerInlineQuery(result);
-// });
+  // Using context shortcut
+  ctx.leaveChat();
+});
 
 bot.launch();
 // Enable graceful stop
