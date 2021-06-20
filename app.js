@@ -3,10 +3,11 @@ const express = require("express");
 const app = express();
 
 const welcomeMessages = require("./src/welcomeMessages");
+const goodByeMessages = require("./src/goodByeMessages");
 
-const randomMessage = () => {
-  const randomNumber = Math.floor(Math.random() * welcomeMessages.length);
-  return welcomeMessages[randomNumber];
+const randomMessage = (messages) => {
+  const randomNumber = Math.floor(Math.random() * messages.length);
+  return messages[randomNumber];
 };
 
 const createMessage = (message, name, group) => {
@@ -19,7 +20,7 @@ const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
 // Greet New members
 bot.on("new_chat_members", (ctx) => {
-  const messageTemplate = randomMessage();
+  const messageTemplate = randomMessage(welcomeMessages);
   const message = createMessage(
     messageTemplate,
     ctx.message.new_chat_member.first_name,
@@ -30,11 +31,13 @@ bot.on("new_chat_members", (ctx) => {
 
 // Say good bye to leaving members
 bot.on("left_chat_member", (ctx) => {
-  console.log(ctx.message);
-  ctx.telegram.sendMessage(
-    ctx.message.chat.id,
-    `Good bye ${ctx.message.left_chat_member.first_name}. We are sad to see you go 🙂`
+  const messageTemplate = randomMessage(goodByeMessages);
+  const message = createMessage(
+    messageTemplate,
+    ctx.message.left_chat_member.first_name,
+    "CCB"
   );
+  ctx.telegram.sendMessage(ctx.message.chat.id, message);
 });
 
 // Leave chat
