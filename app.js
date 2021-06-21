@@ -4,6 +4,7 @@ const axios = require("axios");
 // Message templates
 const welcomeMessages = require("./src/welcomeMessages");
 const goodByeMessages = require("./src/goodByeMessages");
+const funnyMessages = require("./src/funnyMessages");
 // Utility functions
 const randomMessage = require("./utils/selectRandomMessage");
 const createMessage = require("./utils/createMessage");
@@ -50,7 +51,9 @@ bot.command("top10", async (ctx) => {
       "https://api.coincap.io/v2/assets?limit=10"
     );
 
-    let message = `*Name* -> *Price* -> *MarketCap*\n`;
+    let message = randomMessage(funnyMessages);
+
+    message += `\n*Name* -> *Price* -> *MarketCap*\n`;
     coindata.data.data.forEach((coin, i) => {
       message += `*${i + 1}* ${coin.symbol} -> $${parseFloat(
         coin.priceUsd
@@ -64,7 +67,9 @@ bot.command("top10", async (ctx) => {
       Extra.markdown(true)
     );
   } catch (err) {
-    console.log(err);
+    ctx.telegram.sendMessage(
+      "Why do you have to be so lazy? 😖 Just go to an exchange and check it yourself😡"
+    );
   }
 });
 
