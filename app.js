@@ -1,19 +1,12 @@
-const { Composer } = require('micro-bot')
-
+const { Composer } = require("micro-bot");
+// Message templates
 const welcomeMessages = require("./src/welcomeMessages");
 const goodByeMessages = require("./src/goodByeMessages");
+// Utility functions
+const randomMessage = require("./utils/selectRandomMessage");
+const createMessage = require("./utils/createMessage");
 
-const randomMessage = (messages) => {
-  const randomNumber = Math.floor(Math.random() * messages.length);
-  return messages[randomNumber];
-};
-
-const createMessage = (message, name, group) => {
-  let output = message.replace(/{name}/g, name);
-  output = output.replace(/{group}/g, group);
-  return output;
-};
-
+// Bot instance
 const bot = new Composer();
 
 // Greet New members
@@ -47,5 +40,4 @@ bot.command("quit", (ctx) => {
   ctx.leaveChat();
 });
 
-
-module.exports = bot
+module.exports = bot;
