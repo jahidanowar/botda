@@ -1,6 +1,4 @@
-const { Telegraf } = require("telegraf");
-const express = require("express");
-const app = express();
+const { Composer } = require('micro-bot')
 
 const welcomeMessages = require("./src/welcomeMessages");
 const goodByeMessages = require("./src/goodByeMessages");
@@ -16,7 +14,7 @@ const createMessage = (message, name, group) => {
   return output;
 };
 
-const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
+const bot = new Composer();
 
 // Greet New members
 bot.on("new_chat_members", (ctx) => {
@@ -49,9 +47,5 @@ bot.command("quit", (ctx) => {
   ctx.leaveChat();
 });
 
-bot.launch();
-// // Enable graceful stop
-// process.once("SIGINT", () => bot.stop("SIGINT"));
-// process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-module.exports = app;
+module.exports = bot

@@ -2,11 +2,11 @@
   "name": "botda",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js NODE_ENV=production"
+    "start": "micro-bot"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,6 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "telegraf": "^4.3.0"
+    "micro-bot": "^2.5.3"
   }
 }
