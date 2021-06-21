@@ -1,10 +1,13 @@
-const { Composer } = require("micro-bot");
+const { Composer, Extra } = require("micro-bot");
+const axios = require("axios");
+
 // Message templates
 const welcomeMessages = require("./src/welcomeMessages");
 const goodByeMessages = require("./src/goodByeMessages");
 // Utility functions
 const randomMessage = require("./utils/selectRandomMessage");
 const createMessage = require("./utils/createMessage");
+const numberToMillion = require("./utils/numberToMillion");
 
 // Bot instance
 const bot = new Composer();
@@ -38,6 +41,31 @@ bot.command("quit", (ctx) => {
 
   // Using context shortcut
   ctx.leaveChat();
+});
+
+// Get shows top 10 crypto
+bot.command("top10", async (ctx) => {
+  try {
+    const coindata = await axios.get(
+      "https://api.coincap.io/v2/assets?limit=10"
+    );
+
+    let message = `*Name* -> *Price* -> *MarketCap*\n`;
+    coindata.data.data.forEach((coin, i) => {
+      message += `*${i + 1}* ${coin.symbol} -> $${parseFloat(
+        coin.priceUsd
+      ).toFixed(2)} -> $${numberToMillion(parseInt(coin.marketCapUsd))}\n`;
+    });
+    message += ``;
+
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      message,
+      Extra.markdown(true)
+    );
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = bot;
