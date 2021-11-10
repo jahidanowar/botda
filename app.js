@@ -10,6 +10,9 @@ const randomMessage = require("./utils/selectRandomMessage");
 const createMessage = require("./utils/createMessage");
 const numberToMillion = require("./utils/numberToMillion");
 
+const TOP_API = "https://api.coincap.io/v2/assets?limit=10";
+const STATUS_API = "https://api.alternative.me/fng/";
+
 // Bot instance
 const bot = new Composer();
 
@@ -47,9 +50,7 @@ bot.command("quit", (ctx) => {
 // Get shows top 10 crypto
 bot.command("top10", async (ctx) => {
   try {
-    const coindata = await axios.get(
-      "https://api.coincap.io/v2/assets?limit=10"
-    );
+    const coindata = await axios.get(TOP_API);
 
     let message = randomMessage(funnyMessages);
 
@@ -70,6 +71,22 @@ bot.command("top10", async (ctx) => {
     ctx.telegram.sendMessage(
       "Why do you have to be so lazy? 😖 Just go to an exchange and check it yourself😡"
     );
+  }
+});
+
+// Get Greed Index
+bot.command("status", async (ctx) => {
+  try {
+    const { data } = await axios.get(STATUS_API);
+    const message = `*Greed Index*\n`;
+    message += `*${data[0].value_classification}*`;
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      message,
+      Extra.markdown(true)
+    );
+  } catch (err) {
+    ctx.telegram.sendMessage("Sorry yar🥲! The service is down now.");
   }
 });
 
