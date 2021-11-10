@@ -1,5 +1,6 @@
 const { Composer, Extra } = require("micro-bot");
 const axios = require("axios");
+const { format } = require("date-fns");
 
 // Message templates
 const welcomeMessages = require("./src/welcomeMessages");
@@ -12,6 +13,7 @@ const numberToMillion = require("./utils/numberToMillion");
 
 const TOP_API = "https://api.coincap.io/v2/assets?limit=10";
 const STATUS_API = "https://api.alternative.me/fng/";
+const STATUS_IMG = "https://alternative.me/crypto/fear-and-greed-index.png";
 
 // Bot instance
 const bot = new Composer();
@@ -78,15 +80,25 @@ bot.command("top10", async (ctx) => {
 bot.command("status", async (ctx) => {
   try {
     const { data } = await axios.get(STATUS_API);
-    const message = `*Greed Index*\n`;
-    message += `*${data[0].value_classification}*`;
+
+    let message = `Greed Index -> *${data.data[0].value_classification}*\n`;
+    message += `Updated on: ${format(
+      new Date(data.data[0].timestamp * 1000),
+      "MMM dd, h:m a"
+    )}`;
+
     ctx.telegram.sendMessage(
       ctx.message.chat.id,
       message,
       Extra.markdown(true)
     );
+    ctx.telegram.sendPhoto(ctx.message.chat.id, STATUS_IMG);
   } catch (err) {
-    ctx.telegram.sendMessage("Sorry yar🥲! The service is down now.");
+    console.log(err);
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      "Sorry yar🥲! The service is down now."
+    );
   }
 });
 
