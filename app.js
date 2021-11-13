@@ -40,6 +40,13 @@ bot.on("left_chat_member", (ctx) => {
   ctx.telegram.sendMessage(ctx.message.chat.id, message);
 });
 
+//Menu
+bot.start(async (ctx) => {
+  console.log(ctx.message.from, ctx.message.chat);
+  const message = `/top - Top 10 Cryptocurrencies\n/status - Fear and Greed Index`;
+  await ctx.reply(message);
+});
+
 // Leave chat
 bot.command("quit", (ctx) => {
   // Explicit usage
@@ -79,6 +86,8 @@ bot.command("top10", async (ctx) => {
 // Get Greed Index
 bot.command("status", async (ctx) => {
   try {
+    const randomNumber = Math.round(Math.random() * 100);
+
     const { data } = await axios.get(STATUS_API);
 
     let message = `Greed Index -> *${data.data[0].value_classification}*\n`;
@@ -92,7 +101,10 @@ bot.command("status", async (ctx) => {
       message,
       Extra.markdown(true)
     );
-    ctx.telegram.sendPhoto(ctx.message.chat.id, STATUS_IMG);
+    ctx.telegram.sendPhoto(
+      ctx.message.chat.id,
+      `${STATUS_IMG}?status=${randomNumber}`
+    );
   } catch (err) {
     console.log(err);
     ctx.telegram.sendMessage(
