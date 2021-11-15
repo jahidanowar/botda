@@ -93,7 +93,7 @@ bot.command("status", async (ctx) => {
     let message = `Greed Index -> *${data.data[0].value_classification}*\n`;
     message += `Updated on: ${format(
       new Date(data.data[0].timestamp * 1000),
-      "MMM dd, h:m a"
+      "MMM dd"
     )}`;
 
     ctx.telegram.sendMessage(
