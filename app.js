@@ -86,7 +86,7 @@ bot.command("top10", async (ctx) => {
 // Get Greed Index
 bot.command("status", async (ctx) => {
   try {
-    const randomNumber = Math.round(Math.random() * 100);
+    const randomNumber = Math.round(Math.random() * 100) + Date.now();
 
     const { data } = await axios.get(STATUS_API);
 
