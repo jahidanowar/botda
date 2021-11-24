@@ -129,7 +129,7 @@ bot.command("100msupply", async (ctx) => {
       }
     );
 
-    let message = `*${ctx.message.forward_from.first_name} here is the list of Top 100 Cryptocurrencies under 100Mln*\n`;
+    let message = `*${ctx.message.from.first_name} here is the list of Top 100 Cryptocurrencies under 100Mln*\n`;
     let i = 1;
     coins.data.data.forEach((coin) => {
       if (coin.max_supply && coin.max_supply <= 100000000) {
