@@ -14,6 +14,7 @@ const numberToMillion = require("./utils/numberToMillion");
 const TOP_API = "https://api.coincap.io/v2/assets?limit=10";
 const STATUS_API = "https://api.alternative.me/fng/";
 const STATUS_IMG = "https://alternative.me/crypto/fear-and-greed-index.png";
+const CMC_API = " https://pro-api.coinmarketcap.com/v1";
 
 // Bot instance
 const bot = new Composer();
@@ -104,6 +105,45 @@ bot.command("status", async (ctx) => {
     ctx.telegram.sendPhoto(
       ctx.message.chat.id,
       `${STATUS_IMG}?status=${randomNumber}`
+    );
+  } catch (err) {
+    console.log(err);
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      "Sorry yar🥲! The service is down now."
+    );
+  }
+});
+
+// Get top coins under xM Supply
+
+bot.command("100msupply", async (ctx) => {
+  console.log(ctx.message.from.first_name, process.env.CMC_TOKEN);
+  try {
+    const coins = await axios.get(
+      `${CMC_API}/cryptocurrency/listings/latest?market_cap_min=1000000&sort=max_supply&sort_dir=asc`,
+      {
+        headers: {
+          "x-cmc_pro_api_key": process.env.CMC_TOKEN,
+        },
+      }
+    );
+
+    let message = `*${ctx.message.forward_from.first_name} here is the list of Top 100 Cryptocurrencies under 100Mln*\n`;
+    let i = 1;
+    coins.data.data.forEach((coin) => {
+      if (coin.max_supply && coin.max_supply <= 100000000) {
+        message += `*${i++}* ${coin.name} -> $${parseFloat(
+          coin.quote.USD.price
+        ).toFixed(2)} -> ${numberToMillion(coin.max_supply)} Sply\n`;
+      }
+    });
+    message += ``;
+
+    ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      message,
+      Extra.markdown(true)
     );
   } catch (err) {
     console.log(err);
