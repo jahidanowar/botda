@@ -118,7 +118,6 @@ bot.command("status", async (ctx) => {
 // Get top coins under xM Supply
 
 bot.command("100msupply", async (ctx) => {
-  console.log(ctx.message.from.first_name, process.env.CMC_TOKEN);
   try {
     const coins = await axios.get(
       `${CMC_API}/cryptocurrency/listings/latest?market_cap_min=1000000&sort=max_supply&sort_dir=asc`,
